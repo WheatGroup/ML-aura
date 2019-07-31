@@ -57,7 +57,7 @@ k_scores = []
 for k in k_range:
     knn = KNeighborsClassifier(n_neighbors=k)
 ##    loss = -cross_val_score(knn, X, y, cv=10, scoring='mean_squared_error') # for regression
-    scores = cross_val_score(knn, X, Y, cv=10, scoring='accuracy') # for classification
+    scores = cross_val_score(knn, X_Poly, Y, cv=10, scoring='accuracy') # for classification
     k_scores.append(scores.mean())
 
 plt.plot(k_range, k_scores)

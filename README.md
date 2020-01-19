@@ -12,13 +12,20 @@
     splt.scatter(iris.data[:, i], iris.data[:, j], c=iris.target)
     ```
     
-* GBDT算法中 feature_importance方法的使用 判断特征的重要程度
-* xgboost的实践
+* ~~GBDT算法中 feature_importance方法的使用 判断特征的重要程度~~
+  - feature_importance用来表示GBDT方法训练的特征重要性的成都
+  ![](png/gbdt_regression.png)
+* ~~xgboost的实践~~
 * 分类那堂课 9：28之前有讲到针对训练不收敛的情况 用relu来缓解？ 此句话可能有问题
-* 思考题： 特征数量过多的时候 如何进行特征筛选
+* <u>思考题： 特征数量过多的时候 如何进行特征筛选
+    - 减少特征数量 、 降维
+  这块需要好好夯实  </u>
+
 * 练习题： 用朴素贝叶斯、决策树、线性回归对鸢尾花数据集进行预测 靠看精度
 再将数据放大100倍之后 再训练 看看精度  
 目的是看看数据归一化的作用
 * 用决策树练习本分类问题
 * 用所有学过的分类算法完成手写数字的识别和文本分类这两个问题
-    - 先用adaboost实现手写数字的识别问题   
+    - ~~先用adaboost和gbdt实现手写数字的识别问题~~
+    ![](png/adaboost_gbdt.png)  
+    - SVM进行文本分类   

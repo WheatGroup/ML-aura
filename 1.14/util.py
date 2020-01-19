@@ -3,7 +3,7 @@
 import sys
 import io
 #改变标准输出的默认编码
-sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+# sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 import numpy as np
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif']=['SimHei'] #用来正常显示中文标签
@@ -12,8 +12,11 @@ from sklearn.model_selection import learning_curve
 from sklearn import linear_model
 from sklearn.ensemble import RandomForestRegressor
 import pandas as pd #数据分析
+import time
 from sklearn import linear_model
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
 
 # 用sklearn的learning_curve得到training_score和cv_score，使用matplotlib画出learning curve
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1,
@@ -66,36 +69,6 @@ def plot_learning_curve(estimator, title, X, y, ylim=None, cv=None, n_jobs=1,
     diff = (train_scores_mean[-1] + train_scores_std[-1]) - (test_scores_mean[-1] - test_scores_std[-1])
     return midpoint, diff
 
-def set_missing_ages(df):
-    # 把已有的数值型特征取出来丢进Random Forest Regressor中
-    age_df = df[['Age', 'Fare', 'Parch', 'SibSp', 'Pclass']]
-
-    # 乘客分成已知年龄和未知年龄两部分
-    known_age = age_df[age_df.Age.notnull()].as_matrix()
-    unknown_age = age_df[age_df.Age.isnull()].as_matrix()
-
-    # y即目标年龄
-    y = known_age[:, 0]
-
-    # X即特征属性值
-    X = known_age[:, 1:]
-
-    # fit到RandomForestRegressor之中
-    rfr = RandomForestRegressor(random_state=0, n_estimators=2000, n_jobs=-1)
-    rfr.fit(X, y)
-
-    # 用得到的模型进行未知年龄结果预测
-    predictedAges = rfr.predict(unknown_age[:, 1::])
-
-    # 用得到的预测结果填补原缺失数据
-    df.loc[(df.Age.isnull()), 'Age'] = predictedAges
-
-    return df, rfr
-
-def set_Cabin_type(df):
-    df.loc[(df.Cabin.notnull()), 'Cabin'] = "Yes"
-    df.loc[(df.Cabin.isnull()), 'Cabin'] = "No"
-    return df
 
 def one_hot_encoding(data_train):
     # 因为逻辑回归建模时，需要输入的特征都是数值型特征
@@ -116,13 +89,30 @@ def one_hot_encoding(data_train):
     return df
 
 
-def print_dts(estimator, X_train,y_train, X_test, y_test):
+def print_dts(estimator, X_train, y_train, X_test, y_test):
     '''
     打印模型的精度
     :param estimator: 模型
     '''
-
+    print('开始训练')
+    start = time.time()
     estimator.fit(X_train, y_train)
-    y_pdt = estimator.predict(X_test)
-    dts = len(np.where(y_pdt == y_test)[0]) / len(y_test)
-    print("{} 精度:{:.3f}".format("Line", dts * 100))
+    print('训练完成')
+    fit_end = time.time()
+    print(fit_end - start)
+    test_type = type(y_train[0])
+    print('开始预测')
+    pdt_start = time.time()
+    test_y_pdt = estimator.predict(X_test).astype(test_type)
+    print('测试集预测完成')
+    pdt_end = time.time()
+    print(pdt_end - pdt_start)
+    train_y_pdt = estimator.predict(X_train).astype(test_type)
+    test_dts = len(np.where(test_y_pdt == y_test)[0]) / len(y_test)
+    train_dts = len(np.where(train_y_pdt == y_train)[0]) / len(y_train)
+
+    # print(accuracy_score(y_test, estimator.predict(X_test).astype(test_type)))
+    # print(accuracy_score(y_train, estimator.predict(X_train).astype(test_type)))
+
+    print("{} 训练集精度:{:.3f}".format("Line", train_dts * 100))
+    print("{} 测试集精度:{:.3f}".format("Line", test_dts * 100))

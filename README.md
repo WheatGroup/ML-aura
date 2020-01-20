@@ -14,13 +14,18 @@
     
 * ~~GBDT算法中 feature_importance方法的使用 判断特征的重要程度~~
   - feature_importance用来表示GBDT方法训练的特征重要性的成都
-  ![](png/gbdt_regression.png)
+
+![](png/gbdt_regression.png)
+
 * ~~xgboost的实践~~
 * 分类那堂课 9：28之前有讲到针对训练不收敛的情况 用relu来缓解？ 此句话可能有问题
-* 思考题： 特征数量过多的时候 如何进行特征筛选
-    - 减少特征数量 
-    - 降维: https://blog.csdn.net/hellocsz/article/details/80726584
 
+* ~~思考题： 特征数量过多的时候 如何进行特征筛选~~
+    - ~~特征筛选~~:(demo见AIE26特征工程文件夹) 与降维不同，其是从原始特征数据集中选择出子集，是一种包含的关系，没有更改原始的特征空间。
+        - filter方法： 卡方检验，信息增益（决策时ID3），相关系数
+        -  wrapper方法：其主要思想是：将子集的选择看作是一个搜索寻优问题，生成不同的组合，对组合进行评价，再与其他的组合进行比较 比如： 递归特征消除法
+        - embedded: 岭回归 lasso回归
+    - ~~降维~~ :(https://blog.csdn.net/hellocsz/article/details/80726584)降维的方法主要是通过属性间的关系，如组合不同的属性得新的属性，这样就改变了原来的特征空间（详见jiangwei.py） pca的应用：https://blog.csdn.net/HLBoy_happy/article/details/77146012
 
 * 练习题： 用朴素贝叶斯、决策树、线性回归对鸢尾花数据集进行预测 靠看精度
 再将数据放大100倍之后 再训练 看看精度  

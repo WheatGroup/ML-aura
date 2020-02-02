@@ -15,7 +15,7 @@ import pandas as pd #数据分析
 import time
 from sklearn import linear_model
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, r2_score
 
 
 # 用sklearn的learning_curve得到training_score和cv_score，使用matplotlib画出learning curve
@@ -116,3 +116,41 @@ def print_dts(estimator, X_train, y_train, X_test, y_test):
 
     print("{} 训练集精度:{:.3f}".format("Line", train_dts * 100))
     print("{} 测试集精度:{:.3f}".format("Line", test_dts * 100))
+
+
+def performance_metric(y_true, y_predict):
+    """计算并返回预测值相比于预测值的分数"""
+
+    score = r2_score(y_true, y_predict, sample_weight=None, multioutput=None)
+
+    return score
+
+
+
+
+# 提示: 导入 'KFold' 、决策树模型、 'make_scorer'、 'GridSearchCV'
+from sklearn.model_selection import KFold
+from sklearn.metrics import make_scorer
+from sklearn.tree import DecisionTreeRegressor, DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV
+
+
+def fit_model(X, y):
+    """ 基于输入数据 [X,y]，利于网格搜索找到最优的决策树模型"""
+
+    cross_validator = KFold(n_splits=10, shuffle=False, random_state=None)
+
+    Classifier = DecisionTreeClassifier()
+
+    params = {'max_depth': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+
+    scoring_fnc = make_scorer(performance_metric)
+    print('开始网格搜索')
+
+    grid = GridSearchCV(estimator=Classifier, param_grid=params, scoring=scoring_fnc, cv=cross_validator)
+
+    # 基于输入数据 [X,y]，进行网格搜索
+    grid = grid.fit(X, y)
+
+    # 返回网格搜索后的最优模型
+    return grid.best_estimator_

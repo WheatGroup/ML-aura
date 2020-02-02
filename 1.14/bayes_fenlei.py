@@ -34,7 +34,8 @@ NAME.append("随机森林")
 
 # print_dts(RF, vectors, newsgroups_train.target, vectors_test, newsgroups_test.target)
 # print_dts(DT, vectors, newsgroups_train.target, vectors_test, newsgroups_test.target)
-fit_model(vectors, newsgroups_train.target)
+best_estimator_ = fit_model(vectors, newsgroups_train.target)
+print(best_estimator_)
 
 '''
 for itr, itrname in zip(NBM, NAME):
